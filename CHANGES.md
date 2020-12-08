@@ -83,6 +83,11 @@ OpenSSL 3.0
 
    *Matt Caswell*
 
+ * Parallel dual-prime 1536/2048-bit modular exponentiation for
+   AVX512_IFMA capable processors.
+
+   *Ilya Albrekht, Sergey Kirillov, Andrey Matyukov (Intel Corp)*
+
  * Added support for Kernel TLS (KTLS). In order to use KTLS, support for it
    must be compiled in using the "enable-ktls" compile time option. It must
    also be enabled at run time using the SSL_OP_ENABLE_KTLS option.
