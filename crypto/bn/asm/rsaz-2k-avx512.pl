@@ -505,16 +505,14 @@ ___
 # Constant time extraction from the precomputed table of powers base^i, where
 #    i = 0..2^EXP_WIN_SIZE-1
 #
-# The input |red_table| contains precomputations for two independent base values,
-# so the |tbl_idx| indicates for which base shall we extract the value.
-# |red_table_idx| is a power index.
+# The input |red_table| contains precomputations for two independent base values.
+# |red_table_idx1| and |red_table_idx2| are corresponding power indexes.
 #
-# Extracted value (output) is 20 digit number in 2^52 radix.
+# Extracted value (output) is 2 20 digit numbers in 2^52 radix.
 #
 # void ossl_extract_multiplier_2x20_win5(BN_ULONG *red_Y,
 #                                        const BN_ULONG red_table[1 << EXP_WIN_SIZE][2][20],
-#                                        int red_table_idx,
-#                                        int tbl_idx);           # 0 or 1
+#                                        int red_table_idx1, int red_table_idx2);
 #
 # EXP_WIN_SIZE = 5
 ###############################################################################
