@@ -89,6 +89,7 @@ breaking changes, and mappings for the large list of deprecated functions.
    *Sergey Kirillov, Andrey Matyukov (Intel Corp)*
 
  * Added support for Kernel TLS (KTLS).
+
    *Boris Pismenny, John Baldwin and Andrew Gallatin*
 
  * Support for RFC 5746 secure renegotiation is now required by default for
