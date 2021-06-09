@@ -71,15 +71,15 @@ static ossl_inline int number_of_digits(int bitsize, int digit_size)
  *  _ifma256 - uses 256-bit wide IFMA ISA (AVX512_IFMA256)
  */
 
-void RSAZ_amm52x20_x1_ifma256(BN_ULONG *res, const BN_ULONG *a,
-                          const BN_ULONG *b, const BN_ULONG *m,
-                          BN_ULONG k0);
-void RSAZ_amm52x20_x2_ifma256(BN_ULONG *out, const BN_ULONG *a,
-                          const BN_ULONG *b, const BN_ULONG *m,
-                          const BN_ULONG k0[2]);
-void extract_multiplier_2x20_win5(BN_ULONG *red_Y,
-                                  const BN_ULONG *red_table,
-                                  int red_table_idx1, int red_table_idx2);
+void ossl_rsaz_amm52x20_x1_ifma256(BN_ULONG *res, const BN_ULONG *a,
+                                   const BN_ULONG *b, const BN_ULONG *m,
+                                   BN_ULONG k0);
+void ossl_rsaz_amm52x20_x2_ifma256(BN_ULONG *out, const BN_ULONG *a,
+                                   const BN_ULONG *b, const BN_ULONG *m,
+                                   const BN_ULONG k0[2]);
+void ossl_extract_multiplier_2x20_win5(BN_ULONG *red_Y,
+                                       const BN_ULONG *red_table,
+                                       int red_table_idx1, int red_table_idx2);
 
 void RSAZ_amm52x30_x1_ifma256(BN_ULONG *res, const BN_ULONG *a,
                           const BN_ULONG *b, const BN_ULONG *m,
@@ -135,19 +135,19 @@ static int RSAZ_mod_exp_x2_ifma256(BN_ULONG *res, const BN_ULONG *base,
  * \return 0 in case of failure,
  *         1 in case of success.
  */
-int RSAZ_mod_exp_avx512_x2(BN_ULONG *res1,
-                           const BN_ULONG *base1,
-                           const BN_ULONG *exp1,
-                           const BN_ULONG *m1,
-                           const BN_ULONG *rr1,
-                           BN_ULONG k0_1,
-                           BN_ULONG *res2,
-                           const BN_ULONG *base2,
-                           const BN_ULONG *exp2,
-                           const BN_ULONG *m2,
-                           const BN_ULONG *rr2,
-                           BN_ULONG k0_2,
-                           int factor_size)
+int ossl_rsaz_mod_exp_avx512_x2(BN_ULONG *res1,
+                                const BN_ULONG *base1,
+                                const BN_ULONG *exp1,
+                                const BN_ULONG *m1,
+                                const BN_ULONG *rr1,
+                                BN_ULONG k0_1,
+                                BN_ULONG *res2,
+                                const BN_ULONG *base2,
+                                const BN_ULONG *exp2,
+                                const BN_ULONG *m2,
+                                const BN_ULONG *rr2,
+                                BN_ULONG k0_2,
+                                int factor_size)
 {
     typedef void (*AMM)(BN_ULONG *res, const BN_ULONG *a,
                         const BN_ULONG *b, const BN_ULONG *m, BN_ULONG k0);
@@ -180,7 +180,7 @@ int RSAZ_mod_exp_avx512_x2(BN_ULONG *res1,
 
     switch (factor_size) {
     case 1024:
-        amm = RSAZ_amm52x20_x1_ifma256;
+        amm = ossl_rsaz_amm52x20_x1_ifma256;
         break;
     case 1536:
         amm = RSAZ_amm52x30_x1_ifma256;
@@ -341,8 +341,8 @@ int RSAZ_mod_exp_x2_ifma256(BN_ULONG *out,
     case 1024:
         red_digits = 20;
         exp_digits = 16;
-        damm = RSAZ_amm52x20_x2_ifma256;
-        extract = extract_multiplier_2x20_win5;
+        damm = ossl_rsaz_amm52x20_x2_ifma256;
+        extract = ossl_extract_multiplier_2x20_win5;
         break;
     case 1536:
         /* Extended with 2 digits padding to avoid mask ops in high YMM register */

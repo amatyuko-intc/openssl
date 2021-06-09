@@ -86,7 +86,7 @@ An B<EVP_PKEY> context can be obtained by calling:
 
 An B<X25519> key can be generated like this:
 
-    pkey = EVP_Q_keygen(NULL, NULL, "X25519");
+    pkey = EVP_PKEY_Q_keygen(NULL, NULL, "X25519");
 
 An B<X448>, B<ED25519>, or B<ED448> key can be generated likewise.
 
@@ -98,7 +98,7 @@ L<EVP_SIGNATURE-ED25519(7)>, L<EVP_SIGNATURE-ED448(7)>
 
 =head1 COPYRIGHT
 
-Copyright 2020 The OpenSSL Project Authors. All Rights Reserved.
+Copyright 2020-2021 The OpenSSL Project Authors. All Rights Reserved.
 
 Licensed under the Apache License 2.0 (the "License").  You may not use
 this file except in compliance with the License.  You can obtain a copy

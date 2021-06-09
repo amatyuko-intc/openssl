@@ -102,11 +102,11 @@ extern "C" {
 # endif
 
 /* ------------------------------- OpenVMS -------------------------------- */
-# if defined(__VMS) || defined(VMS) || defined(OPENSSL_SYS_VMS)
+# if defined(__VMS) || defined(VMS)
 #  if !defined(OPENSSL_SYS_VMS)
 #   undef OPENSSL_SYS_UNIX
+#   define OPENSSL_SYS_VMS
 #  endif
-#  define OPENSSL_SYS_VMS
 #  if defined(__DECC)
 #   define OPENSSL_SYS_VMS_DECC
 #  elif defined(__DECCXX)
@@ -210,7 +210,7 @@ extern "C" {
 #  endif
 # endif
 
-# ifdef DEBUG_UNUSED
+# if defined(UNUSEDRESULT_DEBUG)
 #  define __owur __attribute__((__warn_unused_result__))
 # else
 #  define __owur

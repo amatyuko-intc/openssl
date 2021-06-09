@@ -7,11 +7,6 @@
  * https://www.openssl.org/source/license.html
  */
 
-/*
- * TODO(v3.0): the IMPLEMENT macros in include/openssl/pem.h should be
- * moved here.
- */
-
 #include <openssl/core_dispatch.h>
 #include <openssl/pem.h>
 #include <openssl/encoder.h>
@@ -67,7 +62,7 @@
     }                                                                   \
     if (enc != NULL) {                                                  \
         ret = 0;                                                        \
-        if (OSSL_ENCODER_CTX_set_cipher(ctx, EVP_CIPHER_name(enc),      \
+        if (OSSL_ENCODER_CTX_set_cipher(ctx, EVP_CIPHER_get0_name(enc), \
                                         NULL)) {                        \
             ret = 1;                                                    \
             if (kstr != NULL                                            \

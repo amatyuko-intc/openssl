@@ -53,11 +53,23 @@ static int test_builtin_provider(void)
 {
     const char *name = "p_test_builtin";
     OSSL_PROVIDER *prov = NULL;
+    int ret;
 
-    return
+    /*
+     * We set properties that we know the providers we are using don't have.
+     * This should mean that the p_test provider will fail any fetches - which
+     * is something we test inside the provider.
+     */
+    EVP_set_default_properties(NULL, "fips=yes");
+
+    ret =
         TEST_ptr(prov =
                  ossl_provider_new(NULL, name, PROVIDER_INIT_FUNCTION_NAME, 0))
         && test_provider(prov, expected_greeting1(name));
+
+    EVP_set_default_properties(NULL, "");
+
+    return ret;
 }
 
 #ifndef NO_PROVIDER_MODULE
@@ -106,7 +118,7 @@ static int test_cache_flushes(void)
         goto err;
 
     if (!TEST_ptr_null(md = EVP_MD_fetch(ctx, "SHA256", NULL))) {
-        const char *provname = OSSL_PROVIDER_name(EVP_MD_provider(md));
+        const char *provname = OSSL_PROVIDER_get0_name(EVP_MD_get0_provider(md));
 
         if (OSSL_PROVIDER_available(NULL, provname))
             TEST_info("%s provider is available\n", provname);

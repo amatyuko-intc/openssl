@@ -68,7 +68,8 @@ OSSL_CORE_MAKE_FUNC(int,core_get_params,(const OSSL_CORE_HANDLE *prov,
                                          OSSL_PARAM params[]))
 # define OSSL_FUNC_CORE_THREAD_START           3
 OSSL_CORE_MAKE_FUNC(int,core_thread_start,(const OSSL_CORE_HANDLE *prov,
-                                           OSSL_thread_stop_handler_fn handfn))
+                                           OSSL_thread_stop_handler_fn handfn,
+                                           void *arg))
 # define OSSL_FUNC_CORE_GET_LIBCTX             4
 OSSL_CORE_MAKE_FUNC(OPENSSL_CORE_CTX *,core_get_libctx,
                     (const OSSL_CORE_HANDLE *prov))
@@ -196,6 +197,7 @@ OSSL_CORE_MAKE_FUNC(int, provider_register_child_cb,
                     (const OSSL_CORE_HANDLE *handle,
                      int (*create_cb)(const OSSL_CORE_HANDLE *provider, void *cbdata),
                      int (*remove_cb)(const OSSL_CORE_HANDLE *provider, void *cbdata),
+                     int (*global_props_cb)(const char *props, void *cbdata),
                      void *cbdata))
 OSSL_CORE_MAKE_FUNC(void, provider_deregister_child_cb,
                     (const OSSL_CORE_HANDLE *handle))

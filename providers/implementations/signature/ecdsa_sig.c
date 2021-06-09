@@ -227,7 +227,7 @@ static int ecdsa_setup_md(PROV_ECDSA_CTX *ctx, const char *mdname,
     sha1_allowed = (ctx->operation != EVP_PKEY_OP_SIGN);
     md_nid = ossl_digest_get_approved_nid_with_sha1(ctx->libctx, md,
                                                     sha1_allowed);
-    if (md_nid == NID_undef) {
+    if (md_nid < 0) {
         ERR_raise_data(ERR_LIB_PROV, PROV_R_DIGEST_NOT_ALLOWED,
                        "digest=%s", mdname);
         EVP_MD_free(md);
@@ -248,7 +248,7 @@ static int ecdsa_setup_md(PROV_ECDSA_CTX *ctx, const char *mdname,
     WPACKET_cleanup(&pkt);
     ctx->mdctx = NULL;
     ctx->md = md;
-    ctx->mdsize = EVP_MD_size(ctx->md);
+    ctx->mdsize = EVP_MD_get_size(ctx->md);
     OPENSSL_strlcpy(ctx->mdname, mdname, sizeof(ctx->mdname));
 
     return 1;
@@ -429,7 +429,7 @@ static int ecdsa_get_ctx_params(void *vctx, OSSL_PARAM *params)
     p = OSSL_PARAM_locate(params, OSSL_SIGNATURE_PARAM_DIGEST);
     if (p != NULL && !OSSL_PARAM_set_utf8_string(p, ctx->md == NULL
                                                     ? ctx->mdname
-                                                    : EVP_MD_name(ctx->md)))
+                                                    : EVP_MD_get0_name(ctx->md)))
         return 0;
 
     return 1;

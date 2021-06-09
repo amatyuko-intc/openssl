@@ -599,6 +599,7 @@ struct ssl_session_st {
     const SSL_CIPHER *cipher;
     unsigned long cipher_id;    /* when ASN.1 loaded, this needs to be used to
                                  * load the 'cipher' structure */
+    unsigned int kex_group;      /* TLS group from key exchange */
     CRYPTO_EX_DATA ex_data;     /* application specific data */
     /*
      * These are used to make removal of session-ids more efficient and to
@@ -957,7 +958,7 @@ struct ssl_ctx_st {
      * SSL_new)
      */
 
-    uint32_t options;
+    uint64_t options;
     uint32_t mode;
     int min_proto_version;
     int max_proto_version;
@@ -1378,7 +1379,7 @@ struct ssl_st {
         size_t previous_client_finished_len;
         unsigned char previous_server_finished[EVP_MAX_MD_SIZE];
         size_t previous_server_finished_len;
-        int send_connection_binding; /* TODOEKR */
+        int send_connection_binding;
 
 # ifndef OPENSSL_NO_NEXTPROTONEG
         /*
@@ -1412,6 +1413,12 @@ struct ssl_st {
          */
         char is_probably_safari;
 
+        /*
+         * Track whether we did a key exchange this handshake or not, so
+         * SSL_get_negotiated_group() knows whether to fall back to the
+         * value in the SSL_SESSION.
+         */
+        char did_kex;
         /* For clients: peer temporary key */
         /* The group_id for the key exchange key */
         uint16_t group_id;
@@ -1535,7 +1542,7 @@ struct ssl_st {
     STACK_OF(X509_NAME) *client_ca_names;
     CRYPTO_REF_COUNT references;
     /* protocol behaviour */
-    uint32_t options;
+    uint64_t options;
     /* API behaviour */
     uint32_t mode;
     int min_proto_version;
@@ -2560,7 +2567,6 @@ __owur int dtls1_handle_timeout(SSL *s);
 void dtls1_start_timer(SSL *s);
 void dtls1_stop_timer(SSL *s);
 __owur int dtls1_is_timer_expired(SSL *s);
-void dtls1_double_timeout(SSL *s);
 __owur int dtls_raw_hello_verify_request(WPACKET *pkt, unsigned char *cookie,
                                          size_t cookie_len);
 __owur size_t dtls1_min_mtu(SSL *s);
@@ -2763,7 +2769,7 @@ __owur char ssl3_cbc_record_digest_supported(const EVP_MD_CTX *ctx);
 __owur int ssl3_cbc_digest_record(const EVP_MD *md,
                                   unsigned char *md_out,
                                   size_t *md_out_size,
-                                  const unsigned char header[13],
+                                  const unsigned char *header,
                                   const unsigned char *data,
                                   size_t data_size,
                                   size_t data_plus_mac_plus_padding_size,
